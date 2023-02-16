@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { CalculatorService } from '../service/calculator.service';
-import { CreateCalculatorDto } from '../dto/create-calculator.dto';
-import { UpdateCalculatorDto } from '../dto/update-calculator.dto';
+import { CreateCalculatorDto, UpdateCalculatorDto } from '../dto/create-calculator.dto';
 
 @Controller('calculator')
 export class CalculatorController {

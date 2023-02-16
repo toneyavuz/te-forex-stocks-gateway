@@ -1,26 +1,16 @@
+import { UserService } from '../../user/service/user.service';
+import { Model, ObjectId } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { CreateAuthenticationDto } from '../dto/create-authentication.dto';
-import { UpdateAuthenticationDto } from '../dto/update-authentication.dto';
+import { ValidateAuthenticationDto } from '../dto/validate-authentication.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { User, UserDocument } from 'src/module/user/schema/user.schema';
 
 @Injectable()
 export class AuthenticationService {
-  create(createAuthenticationDto: CreateAuthenticationDto) {
-    return 'This action adds a new authentication';
+  constructor(private readonly userService: UserService) {}
+  async validate(ValidateAuthenticationDto: ValidateAuthenticationDto): Promise<User> {
+    // const user = await this.userService.findOne({ email: '' });
+    return ;
   }
 
-  findAll() {
-    return `This action returns all authentication`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} authentication`;
-  }
-
-  update(id: number, updateAuthenticationDto: UpdateAuthenticationDto) {
-    return `This action updates a #${id} authentication`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} authentication`;
-  }
 }

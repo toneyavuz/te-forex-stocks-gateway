@@ -4,8 +4,7 @@ import {
   CalculatorResponseModel,
 } from '../schema/calculator.schema';
 import { Injectable } from '@nestjs/common';
-import { CreateCalculatorDto } from '../dto/create-calculator.dto';
-import { UpdateCalculatorDto } from '../dto/update-calculator.dto';
+import { CreateCalculatorDto, UpdateCalculatorDto } from '../dto/create-calculator.dto';
 import { CalculatorTPModel } from '../schema/calculator.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';

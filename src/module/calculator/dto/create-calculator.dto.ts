@@ -1,3 +1,4 @@
+import { PartialType } from '@nestjs/mapped-types';
 import { LotModel } from '../schema/calculator.schema';
 
 export class CreateCalculatorDto {
@@ -14,4 +15,7 @@ export class CreateCalculatorDto {
   sellSpread?: number;
   buyLiquidation?: number;
   sellLiquidation?: number;
+}
+
+export class UpdateCalculatorDto extends PartialType(CreateCalculatorDto) {
 }
