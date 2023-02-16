@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/commo
 import { CalculatorService } from '../service/calculator.service';
 import { CreateCalculatorDto, UpdateCalculatorDto } from '../dto/create-calculator.dto';
 import { CalculatorResponseModel } from '../schema/calculator.schema';
+import { ObjectId } from 'mongoose';
 
 @Controller('calculator')
 export class CalculatorController {
@@ -19,17 +20,17 @@ export class CalculatorController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.calculatorService.findOne(+id);
+  findOne(@Param('id') id: ObjectId) {
+    return this.calculatorService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCalculatorDto: UpdateCalculatorDto) {
-    return this.calculatorService.update(+id, updateCalculatorDto);
+  update(@Param('id') id: ObjectId, @Body() updateCalculatorDto: UpdateCalculatorDto) {
+    return this.calculatorService.update(id, updateCalculatorDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.calculatorService.remove(+id);
+  remove(@Param('id') id: ObjectId) {
+    return this.calculatorService.remove(id);
   }
 }

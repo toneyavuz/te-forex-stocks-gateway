@@ -5,19 +5,57 @@ import {
   CalculatorTPTypeEnum,
 } from '../schema/calculator.schema';
 import { Injectable } from '@nestjs/common';
-import { CreateCalculatorDto, UpdateCalculatorDto } from '../dto/create-calculator.dto';
+import {
+  CreateCalculatorDto,
+  UpdateCalculatorDto,
+} from '../dto/create-calculator.dto';
 import { CalculatorTPModel } from '../schema/calculator.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 
 @Injectable()
 export class CalculatorService {
   constructor(
-    @InjectModel(Calculator.name) private calculatorModel: Model<CalculatorDocument>,
+    @InjectModel(Calculator.name)
+    private calculatorModel: Model<CalculatorDocument>,
   ) {}
 
-  async create(createCalculatorDto: CreateCalculatorDto): Promise<CalculatorResponseModel> {
-    const tpList: CalculatorResponseModel = createCalculatorDto.lots.reduce(
+  async create(
+    createCalculatorDto: CreateCalculatorDto,
+  ): Promise<CalculatorResponseModel> {
+    const tpList = this.getCalculatorResponse(createCalculatorDto);
+    tpList.calculator = await this.calculatorModel.create(createCalculatorDto);
+
+    return tpList;
+  }
+
+  findAll() {
+    return `This action returns all calculator`;
+  }
+
+  findOne(id: ObjectId) {
+    return `This action returns a #${id} calculator`;
+  }
+
+  async update(
+    id: ObjectId,
+    updateCalculatorDto: UpdateCalculatorDto,
+  ): Promise<CalculatorResponseModel> {
+    const tpList: CalculatorResponseModel = this.getCalculatorResponse(updateCalculatorDto);
+    tpList.calculator = await this.calculatorModel.findByIdAndUpdate({id: id, ...updateCalculatorDto});
+
+    return tpList;
+  }
+
+
+  remove(id: ObjectId) {
+    return `This action removes a #${id} calculator`;
+  }
+
+   getCalculatorResponse(
+    calculatorDto: UpdateCalculatorDto,
+  ): CalculatorResponseModel {
+    const tpList: CalculatorResponseModel = calculatorDto.lots.reduce(
       (tp, item) => {
         for (let i = 0; i < item.count; i++) {
           tp.buy.push(<CalculatorTPModel>{
@@ -37,63 +75,41 @@ export class CalculatorService {
       .reduce((total, item) => total + item.lotValue, 0)
       .toFixed(0);
     tpList.buy[0].tp = Math.floor(
-      createCalculatorDto.buyPrice -
-        (createCalculatorDto.buyTotalCash -
-          createCalculatorDto.buyCollateral *
-            createCalculatorDto.buyLiquidation) /
+      calculatorDto.buyPrice -
+        (calculatorDto.buyTotalCash -
+          calculatorDto.buyCollateral * calculatorDto.buyLiquidation) /
           allLot +
-        createCalculatorDto.buySpread,
+        calculatorDto.buySpread,
     );
     tpList.sell[0].tp = Math.floor(
-      createCalculatorDto.sellPrice +
-        (createCalculatorDto.sellTotalCash -
-          createCalculatorDto.sellCollateral *
-            createCalculatorDto.sellLiquidation) /
+      calculatorDto.sellPrice +
+        (calculatorDto.sellTotalCash -
+          calculatorDto.sellCollateral * calculatorDto.sellLiquidation) /
           allLot -
-        createCalculatorDto.sellSpread,
+        calculatorDto.sellSpread,
     );
 
     let remainingLot = allLot - +tpList.buy[0].lotValue;
 
     for (let i = 1; i < tpList.buy.length; i++) {
       // buy
-      const d = createCalculatorDto.buyCollateral / (allLot * 10);
+      const d = calculatorDto.buyCollateral / (allLot * 10);
       const e = tpList.buy[i - 1].lotValue * 10;
       tpList.buy[i].tp =
         tpList.buy[i - 1].tp -
-        Math.floor((d * e * createCalculatorDto.buyLiquidation) / remainingLot);
+        Math.floor((d * e * calculatorDto.buyLiquidation) / remainingLot);
 
       // sell
-      const f = createCalculatorDto.sellCollateral / (allLot * 10);
+      const f = calculatorDto.sellCollateral / (allLot * 10);
       const g = tpList.sell[i - 1].lotValue * 10;
       tpList.sell[i].tp =
         tpList.sell[i - 1].tp +
-        Math.floor(
-          (f * g * createCalculatorDto.sellLiquidation) / remainingLot,
-        );
+        Math.floor((f * g * calculatorDto.sellLiquidation) / remainingLot);
 
       // calculate remaining lot
       remainingLot -= +tpList.buy[i].lotValue;
     }
 
-    tpList.calculator = await this.calculatorModel.create(createCalculatorDto);
-
     return tpList;
-  }
-
-  findAll() {
-    return `This action returns all calculator`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} calculator`;
-  }
-
-  update(id: number, updateCalculatorDto: UpdateCalculatorDto) {
-    return `This action updates a #${id} calculator`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} calculator`;
   }
 }
