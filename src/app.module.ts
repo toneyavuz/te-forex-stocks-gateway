@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfigService } from './service/mongoose-config.service';
 import { AuthenticationModule } from './module/authentication/authentication.module';
+import { UsersModule } from './module/users/users.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AuthenticationModule } from './module/authentication/authentication.mod
       useClass: MongooseConfigService,
     }),
     AuthenticationModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
