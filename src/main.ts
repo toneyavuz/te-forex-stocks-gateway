@@ -1,4 +1,5 @@
-// import * as csurf from 'csurf';
+import * as csurf from 'csurf';
+import * as cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -19,6 +20,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.enableCors();
+  app.use(cookieParser());
   // app.use(csurf());
 
 
