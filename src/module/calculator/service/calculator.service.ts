@@ -1,11 +1,22 @@
+import {
+  Calculator,
+  CalculatorDocument,
+  CalculatorResponseModel,
+} from '../schema/calculator.schema';
 import { Injectable } from '@nestjs/common';
 import { CreateCalculatorDto } from '../dto/create-calculator.dto';
 import { UpdateCalculatorDto } from '../dto/update-calculator.dto';
-import { CalculatorTPEntity } from '../entities/calculator-tp.entity';
+import { CalculatorTPModel } from '../schema/calculator.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class CalculatorService {
-  create(createCalculatorDto: CreateCalculatorDto) {
+  constructor(
+    @InjectModel(Calculator.name) private calculatorModel: Model<CalculatorDocument>,
+  ) {}
+
+  async create(createCalculatorDto: CreateCalculatorDto): Promise<CalculatorResponseModel> {
     createCalculatorDto.fee = +createCalculatorDto.fee;
     createCalculatorDto.buyTotalCash = +createCalculatorDto.buyTotalCash;
     createCalculatorDto.sellTotalCash = +createCalculatorDto.sellTotalCash;
@@ -17,24 +28,21 @@ export class CalculatorService {
     createCalculatorDto.sellSpread = +createCalculatorDto.sellSpread;
     createCalculatorDto.buyLiquidation = +createCalculatorDto.buyLiquidation;
     createCalculatorDto.sellLiquidation = +createCalculatorDto.sellLiquidation;
-    const tpList: {
-      buy: CalculatorTPEntity[];
-      sell: CalculatorTPEntity[];
-    } = JSON.parse(createCalculatorDto.lots.toString()).reduce(
+    const tpList: CalculatorResponseModel = JSON.parse(createCalculatorDto.lots.toString()).reduce(
       (tp, item) => {
         for (let i = 0; i < item.count; i++) {
-          tp.buy.push(<CalculatorTPEntity>{
+          tp.buy.push(<CalculatorTPModel>{
             lotValue: item.value,
             type: 'buy',
           });
-          tp.sell.push(<CalculatorTPEntity>{
+          tp.sell.push(<CalculatorTPModel>{
             lotValue: item.value,
             type: 'sell',
           });
         }
         return tp;
       },
-      { buy: <CalculatorTPEntity[]>[], sell: <CalculatorTPEntity[]>[] },
+      { buy: <CalculatorTPModel[]>[], sell: <CalculatorTPModel[]>[] },
     );
     const allLot = +tpList.buy
       .reduce((total, item) => total + item.lotValue, 0)
@@ -78,6 +86,8 @@ export class CalculatorService {
       // calculate remaining lot
       remainingLot -= +tpList.buy[i].lotValue;
     }
+
+    this.calculatorModel.create(createCalculatorDto);
 
     return tpList;
   }

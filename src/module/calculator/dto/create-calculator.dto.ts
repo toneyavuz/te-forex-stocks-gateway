@@ -1,7 +1,7 @@
-import { LotEntity } from '../entities/lot.entity';
+import { LotModel } from '../schema/calculator.schema';
 
 export class CreateCalculatorDto {
-  lots: LotEntity[] | string;
+  lots: LotModel[] | string;
   name: string;
   fee?: number;
   buyTotalCash?: number;
