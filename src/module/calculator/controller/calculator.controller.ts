@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { CalculatorService } from '../service/calculator.service';
 import { CreateCalculatorDto, UpdateCalculatorDto } from '../dto/create-calculator.dto';
+import { CalculatorResponseModel } from '../schema/calculator.schema';
 
 @Controller('calculator')
 export class CalculatorController {
@@ -8,7 +9,7 @@ export class CalculatorController {
   }
 
   @Post()
-  create(@Body() createCalculatorDto: CreateCalculatorDto) {
+  create(@Body() createCalculatorDto: CreateCalculatorDto): Promise<CalculatorResponseModel> {
     return this.calculatorService.create(createCalculatorDto);
   }
 

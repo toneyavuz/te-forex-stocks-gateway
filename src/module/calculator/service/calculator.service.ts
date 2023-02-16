@@ -2,6 +2,7 @@ import {
   Calculator,
   CalculatorDocument,
   CalculatorResponseModel,
+  CalculatorTPTypeEnum,
 } from '../schema/calculator.schema';
 import { Injectable } from '@nestjs/common';
 import { CreateCalculatorDto, UpdateCalculatorDto } from '../dto/create-calculator.dto';
@@ -16,27 +17,16 @@ export class CalculatorService {
   ) {}
 
   async create(createCalculatorDto: CreateCalculatorDto): Promise<CalculatorResponseModel> {
-    createCalculatorDto.fee = +createCalculatorDto.fee;
-    createCalculatorDto.buyTotalCash = +createCalculatorDto.buyTotalCash;
-    createCalculatorDto.sellTotalCash = +createCalculatorDto.sellTotalCash;
-    createCalculatorDto.buyCollateral = +createCalculatorDto.buyCollateral;
-    createCalculatorDto.sellCollateral = +createCalculatorDto.sellCollateral;
-    createCalculatorDto.buyPrice = +createCalculatorDto.buyPrice;
-    createCalculatorDto.sellPrice = +createCalculatorDto.sellPrice;
-    createCalculatorDto.buySpread = +createCalculatorDto.buySpread;
-    createCalculatorDto.sellSpread = +createCalculatorDto.sellSpread;
-    createCalculatorDto.buyLiquidation = +createCalculatorDto.buyLiquidation;
-    createCalculatorDto.sellLiquidation = +createCalculatorDto.sellLiquidation;
-    const tpList: CalculatorResponseModel = JSON.parse(createCalculatorDto.lots.toString()).reduce(
+    const tpList: CalculatorResponseModel = createCalculatorDto.lots.reduce(
       (tp, item) => {
         for (let i = 0; i < item.count; i++) {
           tp.buy.push(<CalculatorTPModel>{
             lotValue: item.value,
-            type: 'buy',
+            type: CalculatorTPTypeEnum.buy,
           });
           tp.sell.push(<CalculatorTPModel>{
             lotValue: item.value,
-            type: 'sell',
+            type: CalculatorTPTypeEnum.sell,
           });
         }
         return tp;
@@ -86,7 +76,7 @@ export class CalculatorService {
       remainingLot -= +tpList.buy[i].lotValue;
     }
 
-    this.calculatorModel.create(createCalculatorDto);
+    tpList.calculator = await this.calculatorModel.create(createCalculatorDto);
 
     return tpList;
   }
