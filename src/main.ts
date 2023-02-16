@@ -1,3 +1,4 @@
+import * as csurf from 'csurf';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
@@ -15,6 +16,10 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+
+  app.enableCors();
+  app.use(csurf());
+
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
