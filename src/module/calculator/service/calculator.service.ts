@@ -29,30 +29,44 @@ export class CalculatorService {
     return tpList;
   }
 
-  findAll() {
-    return `This action returns all calculator`;
+  async findAll(options: any = {}): Promise<Calculator[]> {
+    const limit = options.limit || 10;
+    const skip = options.skip || 0;
+    const keyword = options.keyword || '';
+    return await this.calculatorModel.find({
+      where: { name: { $regex: '.*' + keyword + '.*' } },
+      order: { name: 'DESC' },
+    }).skip(skip).limit(limit).exec();
   }
 
-  findOne(id: ObjectId) {
-    return `This action returns a #${id} calculator`;
+  async findOne(id: ObjectId): Promise<Calculator> {
+    const calculator = await this.calculatorModel.findOne({ _id: id }).exec();
+    return calculator;
   }
 
   async update(
     id: ObjectId,
     updateCalculatorDto: UpdateCalculatorDto,
   ): Promise<CalculatorResponseModel> {
-    const tpList: CalculatorResponseModel = this.getCalculatorResponse(updateCalculatorDto);
-    tpList.calculator = await this.calculatorModel.findByIdAndUpdate({id: id, ...updateCalculatorDto});
-
+    delete updateCalculatorDto.id;
+    const calculator = await this.calculatorModel.findByIdAndUpdate(
+      id,
+      updateCalculatorDto,
+    );
+    const tpList: CalculatorResponseModel =
+      this.getCalculatorResponse(calculator);
+    tpList.calculator = calculator;
     return tpList;
   }
 
-
-  remove(id: ObjectId) {
-    return `This action removes a #${id} calculator`;
+  async remove(id: ObjectId): Promise<Calculator> {
+    const deletedCalculator = await this.calculatorModel
+      .findByIdAndRemove({ _id: id })
+      .exec();
+    return deletedCalculator;
   }
 
-   getCalculatorResponse(
+  getCalculatorResponse(
     calculatorDto: UpdateCalculatorDto,
   ): CalculatorResponseModel {
     const tpList: CalculatorResponseModel = calculatorDto.lots.reduce(

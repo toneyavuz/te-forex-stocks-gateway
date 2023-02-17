@@ -7,6 +7,11 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+
+  app.enableCors();
+  app.use(cookieParser());
+  // app.use(csurf());
 
   const config = new DocumentBuilder()
     .setTitle('Stocks API')
@@ -19,12 +24,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  app.enableCors();
-  app.use(cookieParser());
-  // app.use(csurf());
 
-
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   const port = process.env.PORT || 3000;
   await app.listen(port);
 }

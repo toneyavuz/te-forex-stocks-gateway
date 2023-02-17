@@ -14,7 +14,6 @@ export class MongooseConfigService implements MongooseOptionsFactory {
     const maxExecutionTime = this.configService.get('DB_MAX_EXECUTION_TIME');
     const drop = Boolean(this.configService.get('DB_DROP'));
     const sync = Boolean(this.configService.get('DB_SYNC'));
-    console.log(sync);
     return {
       uri: `mongodb+srv://${username}:${password}@${host}/${dbName}?retryWrites=true&w=majority`,
       //   entities: [__dirname + '/**/*.entity{.ts}'],

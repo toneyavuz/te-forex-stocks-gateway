@@ -1,10 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Document } from 'mongoose';
+import { normalizeMongoose } from '../../../util/normalize-mongoose-schema.util';
 
+@Schema({ collection: 'calculator' })
+export class Calculator extends Document {
+  @Prop()
+  lots: LotModel[];
 
-@Schema()
-export class Calculator {
+  @Prop()
+  name: string;
+
   @Prop()
   fee: number;
 
@@ -42,10 +48,9 @@ export class Calculator {
 export type CalculatorDocument = HydratedDocument<Calculator>;
 export const CalculatorSchema = SchemaFactory.createForClass(Calculator);
 
-
 export class LotModel {
-  @ApiProperty({default: 1}) count: number;
-  @ApiProperty({default: 0.5}) value: number;
+  @ApiProperty({ default: 1 }) count: number;
+  @ApiProperty({ default: 0.5 }) value: number;
 }
 
 export enum CalculatorTPTypeEnum {
@@ -56,11 +61,13 @@ export enum CalculatorTPTypeEnum {
 export class CalculatorTPModel {
   @ApiProperty() lotValue: number;
   @ApiProperty() tp: number;
-  @ApiProperty({enum: CalculatorTPTypeEnum}) type: CalculatorTPTypeEnum;
+  @ApiProperty({ enum: CalculatorTPTypeEnum }) type: CalculatorTPTypeEnum;
 }
 
 export class CalculatorResponseModel {
-  @ApiProperty({isArray: true, type: CalculatorTPModel}) buy: CalculatorTPModel[];
-  @ApiProperty({isArray: true, type: CalculatorTPModel}) sell: CalculatorTPModel[];
+  @ApiProperty({ isArray: true, type: CalculatorTPModel })
+  buy: CalculatorTPModel[];
+  @ApiProperty({ isArray: true, type: CalculatorTPModel })
+  sell: CalculatorTPModel[];
   calculator?: Calculator;
 }
