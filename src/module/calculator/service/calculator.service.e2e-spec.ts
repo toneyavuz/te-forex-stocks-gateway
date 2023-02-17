@@ -1,7 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
-import { CreateCalculatorDto, UpdateCalculatorDto } from '../../../module/calculator/dto/create-calculator.dto';
+import {
+  CreateCalculatorDto,
+  UpdateCalculatorDto,
+} from '../../../module/calculator/dto/create-calculator.dto';
 import { AppModule } from '../../../app.module';
 
 const createBody: CreateCalculatorDto = {
@@ -61,9 +64,7 @@ describe('Calculator Controller (e2e)', () => {
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [
-        AppModule,
-      ],
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -79,12 +80,18 @@ describe('Calculator Controller (e2e)', () => {
       .set('Accept', 'application/json')
       .expect(201)
       .expect((res) => {
-        const lostsCount = createBody.lots?.reduce((total, item) => total + item.count, 0);
-        const pass = Object.keys(res.body).length === 3 && res.body.calculator !== null && res.body.buy.length === lostsCount && res.body.sell.length === lostsCount;
-        if(pass) {
+        const lostsCount = createBody.lots?.reduce(
+          (total, item) => total + item.count,
+          0,
+        );
+        const pass =
+          Object.keys(res.body).length === 3 &&
+          res.body.calculator !== null &&
+          res.body.buy.length === lostsCount &&
+          res.body.sell.length === lostsCount;
+        if (pass) {
           updateBody.id = res.body.calculator._id;
-        }
-        return pass;
+        } else throw new Error('Response is not valid');
       });
   });
 
@@ -119,12 +126,11 @@ describe('Calculator Controller (e2e)', () => {
           'buyLiquidation must be a number conforming to the specified constraints',
           'buyLiquidation should not be empty',
           'sellLiquidation must be a number conforming to the specified constraints',
-          'sellLiquidation should not be empty'
+          'sellLiquidation should not be empty',
         ],
-        error: 'Bad Request'
+        error: 'Bad Request',
       });
   });
-
 
   it(`/PATCH Update Calculator`, () => {
     return request(app.getHttpServer())
@@ -134,9 +140,16 @@ describe('Calculator Controller (e2e)', () => {
       .set('Accept', 'application/json')
       .expect(200)
       .expect((res) => {
-        const lostsCount = updateBody.lots?.reduce((total, item) => total + item.count, 0);
-        const pass = Object.keys(res.body).length === 3 && res.body.calculator !== null && res.body.buy.length === lostsCount && res.body.sell.length === lostsCount;
-        return pass;
+        const lostsCount = updateBody.lots?.reduce(
+          (total, item) => total + item.count,
+          0,
+        );
+        const pass =
+          Object.keys(res.body).length === 3 &&
+          res.body.calculator !== null &&
+          res.body.buy.length === lostsCount &&
+          res.body.sell.length === lostsCount;
+        if (!pass) throw new Error('Response is not valid');
       });
   });
 
@@ -145,7 +158,8 @@ describe('Calculator Controller (e2e)', () => {
       .get('/calculator')
       .expect(200)
       .expect((res) => {
-        if(!Array.isArray(res.body)) throw new Error(`${typeof res.body} Response is not array`);
+        if (!Array.isArray(res.body))
+          throw new Error(`${typeof res.body} Response is not array`);
       });
   });
 
