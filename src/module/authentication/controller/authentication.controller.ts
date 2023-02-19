@@ -8,6 +8,11 @@ import {
 import { AuthenticationService } from '../service/authentication.service';
 import { ApiTags } from '@nestjs/swagger';
 
+
+interface IPolicyHandler {
+  handle(ability: any): boolean;
+}
+
 @Controller('authentication')
 @ApiTags('authentication')
 export class AuthenticationController {
@@ -22,5 +27,10 @@ export class AuthenticationController {
   @Post('login')
   validate(@Request() req) {
     return this.authenticationService.login(req.user);
+  }
+
+  @Post('signup')
+  signup(@Request() req) {
+    return this.authenticationService.signup(req.user);
   }
 }

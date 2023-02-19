@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
+import { UserStatusEnum } from '../enum/user-status.enum';
 
 @Schema({ collection: 'user', timestamps: true })
 export class User {
@@ -14,6 +15,9 @@ export class User {
 
   @Prop({ type: String, select: false })
   password: string;
+
+  @Prop()
+  status: UserStatusEnum;
 }
 
 export type UserDocument = mongoose.HydratedDocument<User>;

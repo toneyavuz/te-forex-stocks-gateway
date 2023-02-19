@@ -1,3 +1,4 @@
+import { IsOwner } from './../../authentication/decorator/owner.decorator';
 import {
   Controller,
   Get,
@@ -18,6 +19,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 @ApiBearerAuth()
 @Controller('user')
 @ApiTags('user')
+@IsOwner()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

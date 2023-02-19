@@ -21,6 +21,7 @@
     "test:e2e:watch": "jest --config ./test/jest-e2e.json --watch"
   },
   "dependencies": {
+    "@casl/ability": "^6.3.3",
     "@nestjs/axios": "^2.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.1",

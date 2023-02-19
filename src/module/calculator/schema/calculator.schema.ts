@@ -10,6 +10,7 @@ export class Calculator extends mongoose.Document {
   _id!: mongoose.Schema.Types.ObjectId;
 
   @Prop()
+  @Type(() => LotModel)
   lots: LotModel[];
 
   @Prop()
@@ -51,7 +52,7 @@ export class Calculator extends mongoose.Document {
   // owner
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
   @Type(() => User)
-  owner: User;
+  user: User;
 }
 
 export type CalculatorDocument = mongoose.HydratedDocument<Calculator>;
