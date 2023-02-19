@@ -1,3 +1,4 @@
+import { User } from '../../user/schema/user.schema';
 import {
   Calculator,
   CalculatorDocument,
@@ -11,20 +12,23 @@ import {
 } from '../dto/create-calculator.dto';
 import { CalculatorTPModel } from '../schema/calculator.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId } from 'mongoose';
+import * as mongoose from 'mongoose';
 
 @Injectable()
 export class CalculatorService {
   constructor(
     @InjectModel(Calculator.name)
-    private calculatorModel: Model<CalculatorDocument>,
+    private calculatorModel: mongoose.Model<CalculatorDocument>,
   ) {}
 
   async create(
     createCalculatorDto: CreateCalculatorDto,
+    user: User,
   ): Promise<CalculatorResponseModel> {
     const tpList = this.getCalculatorResponse(createCalculatorDto);
-    tpList.calculator = await this.calculatorModel.create(createCalculatorDto);
+    tpList.calculator = await this.calculatorModel.create({
+      user: {_id: user._id},
+      ...createCalculatorDto});
 
     return tpList;
   }
@@ -39,13 +43,13 @@ export class CalculatorService {
     }).skip(skip).limit(limit).exec();
   }
 
-  async findOne(id: ObjectId): Promise<Calculator> {
+  async findOne(id: mongoose.ObjectId): Promise<Calculator> {
     const calculator = await this.calculatorModel.findOne({ _id: id }).exec();
     return calculator;
   }
 
   async update(
-    id: ObjectId,
+    id: mongoose.ObjectId,
     updateCalculatorDto: UpdateCalculatorDto,
   ): Promise<CalculatorResponseModel> {
     delete updateCalculatorDto.id;
@@ -59,7 +63,7 @@ export class CalculatorService {
     return tpList;
   }
 
-  async remove(id: ObjectId): Promise<Calculator> {
+  async remove(id: mongoose.ObjectId): Promise<Calculator> {
     const deletedCalculator = await this.calculatorModel
       .findByIdAndRemove({ _id: id })
       .exec();

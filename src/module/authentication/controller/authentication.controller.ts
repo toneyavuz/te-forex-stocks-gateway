@@ -6,8 +6,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthenticationService } from '../service/authentication.service';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('authentication')
+@ApiTags('authentication')
 export class AuthenticationController {
 
   constructor(

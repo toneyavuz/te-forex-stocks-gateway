@@ -1,10 +1,14 @@
+import { User, UserSchema } from './../../user/schema/user.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { HydratedDocument, Document } from 'mongoose';
-import { normalizeMongoose } from '../../../util/normalize-mongoose-schema.util';
+import * as mongoose from 'mongoose';
+import { Type } from 'class-transformer';
 
-@Schema({ collection: 'calculator' })
-export class Calculator extends Document {
+@Schema({ collection: 'calculator', timestamps: true })
+export class Calculator extends mongoose.Document {
+  @Prop({ auto: true })
+  _id!: mongoose.Schema.Types.ObjectId;
+
   @Prop()
   lots: LotModel[];
 
@@ -43,9 +47,14 @@ export class Calculator extends Document {
 
   @Prop()
   sellLiquidation: number;
+
+  // owner
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
+  @Type(() => User)
+  owner: User;
 }
 
-export type CalculatorDocument = HydratedDocument<Calculator>;
+export type CalculatorDocument = mongoose.HydratedDocument<Calculator>;
 export const CalculatorSchema = SchemaFactory.createForClass(Calculator);
 
 export class LotModel {
