@@ -16,21 +16,8 @@ export class MongooseConfigService implements MongooseOptionsFactory {
     const sync = Boolean(this.configService.get('DB_SYNC'));
     return {
       uri: `mongodb+srv://${username}:${password}@${host}/${dbName}?retryWrites=true&w=majority`,
-      //   entities: [__dirname + '/**/*.entity{.ts}'],
-      // useNewUrlParser: true,
-      // ssl: true,
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      // autoLoadEntities: true,
-      // dropSchema: drop,
-      // synchronize: sync,
-      // authSource: 'admin',
-      // logging: true,
-      // extra: {
-      //   max: +connectionLimit,
-      // },
-      //   logger: 'advanced-console',
-      // maxQueryExecutionTime: +maxExecutionTime,
     } as MongooseModuleOptions;
   }
 }

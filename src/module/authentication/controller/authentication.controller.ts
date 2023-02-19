@@ -1,13 +1,16 @@
-import { ValidateAuthenticationDto } from './../dto/validate-authentication.dto';
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { AuthenticationService } from '../service/authentication.service';
+import { LocalAuthenticationGuard } from './../guard/local-authentication.guard';
+import {
+  Controller,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 
 @Controller('authentication')
 export class AuthenticationController {
-  constructor(private readonly authenticationService: AuthenticationService) {}
-
-  @Post()
-  validate(@Body() createAuthenticationDto: ValidateAuthenticationDto) {
-    return this.authenticationService.validate(createAuthenticationDto);
+  @UseGuards(LocalAuthenticationGuard)
+  @Post('login')
+  validate(@Request() req) {
+    return req.user;
   }
 }

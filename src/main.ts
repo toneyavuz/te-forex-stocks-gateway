@@ -1,4 +1,3 @@
-import * as csurf from 'csurf';
 import * as cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
@@ -22,8 +21,7 @@ async function bootstrap() {
     .addTag('stocks')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
-
+  SwaggerModule.setup('swui', app, document);
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
