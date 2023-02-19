@@ -1,7 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { CreateUserDto, UpdateUserDto } from '../dto/create-user.dto';
+import { JwtAuthenticationGuard } from '../../authentication/guard/jwt-authentication.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@UseGuards(JwtAuthenticationGuard)
+@ApiBearerAuth()
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -12,6 +26,11 @@ export class UserController {
   }
 
   @Get()
+  info(@Request() req) {
+    return req.user;
+  }
+
+  @Get('all')
   findAll() {
     return this.userService.findAll();
   }

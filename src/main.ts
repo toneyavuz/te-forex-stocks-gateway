@@ -10,7 +10,6 @@ async function bootstrap() {
 
   app.enableCors();
   app.use(cookieParser());
-  // app.use(csurf());
 
   const config = new DocumentBuilder()
     .setTitle('Stocks API')
@@ -19,6 +18,7 @@ async function bootstrap() {
     )
     .setVersion('1.0')
     .addTag('stocks')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swui', app, document);

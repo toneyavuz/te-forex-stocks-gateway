@@ -1,9 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { CalculatorService } from '../service/calculator.service';
 import { CreateCalculatorDto, UpdateCalculatorDto } from '../dto/create-calculator.dto';
 import { CalculatorResponseModel } from '../schema/calculator.schema';
 import { ObjectId } from 'mongoose';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthenticationGuard } from '../../authentication/guard/jwt-authentication.guard';
 
+@UseGuards(JwtAuthenticationGuard)
+@ApiBearerAuth()
 @Controller('calculator')
 export class CalculatorController {
   constructor(private readonly calculatorService: CalculatorService) {
