@@ -11,19 +11,28 @@ export class AuthorityService {
     private authorityModel: mongoose.Model<AuthorityDocument>,
   ) {}
 
-  init() {
-    this.authorityModel
-      .find()
-      .exec()
-      .then((authorities) => {
-        Object.keys(AuthorityEnum).forEach(async (authority) => {
-          if (!authorities.find((auth) => auth.code === authority)) {
-            await this.authorityModel.create({
-              name: authority,
-              code: AuthorityEnum[authority].replace(/_/gi, ' '),
-            });
-          }
+  async init(): Promise<Authority[]> {
+    const authorities = await this.authorityModel
+      .find({
+        code: {
+          $in: Object.keys(AuthorityEnum),
+        },
+      })
+      .exec();
+    const allAuthorities = [...authorities];
+    const otherAuthorities = Object.keys(AuthorityEnum)
+      .filter(
+        (authority) => !authorities.find((auth) => auth.code === authority),
+      )
+      .map(async (authority) => {
+        let name = AuthorityEnum[authority].replace(/_/gi, ' ').toLowerCase();
+        name = name.charAt(0).toUpperCase() + name.slice(1);
+        return await this.authorityModel.create({
+          name,
+          code: authority,
         });
       });
+    allAuthorities.concat(await Promise.all(otherAuthorities));
+    return allAuthorities;
   }
 }

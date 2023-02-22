@@ -15,7 +15,7 @@ export class Authority {
   code: string;
 
   // owner
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name, required: false })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'user' })
   @Type(() => User)
   user: User;
 }

@@ -1,6 +1,8 @@
+import { Role } from './../../authentication/schema/role.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { UserStatusEnum } from '../enum/user-status.enum';
+import { Type } from 'class-transformer';
 
 @Schema({ collection: 'user', timestamps: true })
 export class User {
@@ -18,6 +20,10 @@ export class User {
 
   @Prop()
   status: UserStatusEnum;
+
+  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: Role.name })
+  @Type(() => Role)
+  roles: Role[];
 }
 
 export type UserDocument = mongoose.HydratedDocument<User>;

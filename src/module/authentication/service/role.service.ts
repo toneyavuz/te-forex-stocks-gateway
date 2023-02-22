@@ -7,38 +7,25 @@ import { Role, RoleDocument } from '../schema/role.schema';
 @Injectable()
 export class RoleService {
   constructor(
-    @InjectModel(Authority.name)
-    private authorityModel: mongoose.Model<AuthorityDocument>,
     @InjectModel(Role.name)
     private roleModel: mongoose.Model<RoleDocument>,
   ) {}
 
-  init() {
-    Promise.all([
-      this.authorityModel.find().exec(),
-      this.roleModel.find().populate('authorities').exec(),
-    ]).then(([authorities, roles]) => {
-      const role = roles.find((role) => role.code === 'ALL_AUTHORITY');
-
-
-      if (!role) {
-        this.roleModel.create({
-          name: 'All Authority',
-          code: 'ALL_AUTHORITY',
-          authorities: authorities.map((authority) => authority._id),
-        });
-      } else {
-        const newAuthorities = authorities?.filter((authority) =>
-            !role.authorities.find(
-              (roleAuthority) => roleAuthority.code === authority.code,
-            ),
-        );
-        
-        if (newAuthorities) {
-          role.authorities?.push(...newAuthorities);
-          role.save();
-        }
+  async init(authorities: Authority[]): Promise<Role> {
+    const role = await this.roleModel.findOne().where({ code: 'ALL_AUTHORITY' }).populate('authorities').exec();
+    if (!role) {
+      return this.roleModel.create({
+        name: 'All Authority',
+        code: 'ALL_AUTHORITY',
+        authorities: authorities.map((authority) => authority._id),
+      });
+    } else {
+      const newAuthorities = authorities?.filter((authority_1) => !role.authorities.find(
+        (roleAuthority) => roleAuthority.code === authority_1.code));
+      if (newAuthorities) {
+        role.authorities?.push(...newAuthorities);
+        return await role.save();
       }
-    });
+    }
   }
 }

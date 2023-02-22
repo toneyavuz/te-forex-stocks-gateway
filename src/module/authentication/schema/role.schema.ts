@@ -16,11 +16,10 @@ export class Role {
   code: string;
 
   // owner
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'user' })
   @Type(() => User)
   user: User;
 
-  // owner
   @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: Authority.name })
   @Type(() => Authority)
   authorities: Authority[];

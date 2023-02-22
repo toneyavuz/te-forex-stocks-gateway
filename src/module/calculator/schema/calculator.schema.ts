@@ -1,4 +1,4 @@
-import { User, UserSchema } from './../../user/schema/user.schema';
+import { User } from './../../user/schema/user.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import * as mongoose from 'mongoose';

@@ -43,10 +43,12 @@ export class AuthenticationModule implements OnModuleInit {
   constructor(
     private readonly authorityService: AuthorityService,
     private readonly roleService: RoleService,
-    ) {}
+    private readonly userService: UserService,
+  ) {}
 
-  onModuleInit() {
-    this.authorityService.init();
-    this.roleService.init();
+  async onModuleInit() {
+    const authorities = await this.authorityService.init();
+    const role = await this.roleService.init(authorities);
+    await this.userService.init(role);
   }
 }

@@ -30,7 +30,7 @@ export class AuthenticationController {
   }
 
   @Post('signup')
-  signup(@Request() req) {
-    return this.authenticationService.signup(req.user);
+  register(@Request() req) {
+    return this.authenticationService.register(req.user);
   }
 }

@@ -18,13 +18,14 @@ export class AuthenticationService {
   }
 
   async login(user: User) {
+    console.log('user', user);
     const payload = { username: user.username, email: user.email, sub: user._id };
     return {
       access_token: this.jwtService.sign(payload, {secret: process.env.JWT_SECRET}),
     };
   }
   
-  async signup(user: User) {
+  async register(user: User) {
     const payload = { username: user.username, email: user.email, sub: user._id };
     return {
       access_token: this.jwtService.sign(payload, {secret: process.env.JWT_SECRET}),
