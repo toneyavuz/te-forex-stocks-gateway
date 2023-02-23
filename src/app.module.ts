@@ -1,3 +1,4 @@
+import { JwtAuthenticationGuard } from './module/authentication/guard/jwt-authentication.guard';
 import { Module } from '@nestjs/common';
 import { AppController } from './controller/app.controller';
 import { AppService } from './service/app.service';
@@ -33,7 +34,11 @@ import { AuthorityGuard } from './module/authentication/guard/authority.guard';
     {
       provide: APP_GUARD,
       useClass: AuthorityGuard,
-  }
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthenticationGuard,
+    },
   ],
 })
 export class AppModule {}

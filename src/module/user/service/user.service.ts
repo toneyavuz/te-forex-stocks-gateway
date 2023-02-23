@@ -45,7 +45,12 @@ export class UserService {
     return this.userModel.find().exec();
   }
 
-  async findOne(id: mongoose.ObjectId): Promise<User> {
+  async findOne(where: any): Promise<User> {
+    const user = await this.userModel.findOne(where).exec();
+    return user;
+  }
+
+  async findOneById(id: mongoose.ObjectId): Promise<User> {
     const user = await this.userModel.findOne({ _id: id }).exec();
     return user;
   }

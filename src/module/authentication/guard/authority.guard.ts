@@ -3,6 +3,7 @@ import { Injectable, CanActivate, ExecutionContext, HttpException, HttpStatus } 
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { Authority } from '../schema/authority.schema';
+import { AUTHORITY_KEY } from '../decorator/authority.decorator';
 
 @Injectable()
 export class AuthorityGuard implements CanActivate {
@@ -10,9 +11,9 @@ export class AuthorityGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
     ): boolean | Promise<boolean> | Observable<boolean> {
-    const authorities = this.reflector.get<string[]>('authorities', context.getHandler())
+    const authorities = this.reflector.get<string[]>(AUTHORITY_KEY, context.getHandler())
     const user = context.switchToHttp().getRequest().user as User;
-    const allUserAuthorities = user?.roles?.reduce((as, item) => as.concat(item.authorities), [] as Authority[]);
+    const allUserAuthorities = user?.roles?.reduce((as, item) => as.concat(item.authorities), [] as Authority[]) ?? [];
     if (!authorities || authorities.length === 0) return true
     if(user?.roles?.length === 0) {
       return false;

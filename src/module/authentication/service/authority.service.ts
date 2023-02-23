@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { AuthorityWithActions } from '../decorator/authority.decorator';
+import { AuthorityActionEnum } from '../enum/authority-action.enum';
 import { AuthorityEnum } from '../enum/authority.enum';
 import { Authority, AuthorityDocument } from '../schema/authority.schema';
 
@@ -20,12 +22,21 @@ export class AuthorityService {
       })
       .exec();
     const allAuthorities = [...authorities];
-    const otherAuthorities = Object.keys(AuthorityEnum)
+    const otherAuthorities = Object.keys(AuthorityEnum).reduce((all, authority) => {
+      return [
+        ...all,
+        AuthorityWithActions(AuthorityEnum[authority], AuthorityActionEnum.MANAGE),
+        AuthorityWithActions(AuthorityEnum[authority], AuthorityActionEnum.READ),
+        AuthorityWithActions(AuthorityEnum[authority], AuthorityActionEnum.CREATE),
+        AuthorityWithActions(AuthorityEnum[authority], AuthorityActionEnum.DELETE),
+        AuthorityWithActions(AuthorityEnum[authority], AuthorityActionEnum.UPDATE),
+      ]
+    }, [])
       .filter(
         (authority) => !authorities.find((auth) => auth.code === authority),
       )
       .map(async (authority) => {
-        let name = AuthorityEnum[authority].replace(/_/gi, ' ').toLowerCase();
+        let name = authority.replace(/_/gi, ' ').toLowerCase();
         name = name.charAt(0).toUpperCase() + name.slice(1);
         return await this.authorityModel.create({
           name,

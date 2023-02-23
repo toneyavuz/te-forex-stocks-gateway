@@ -9,7 +9,7 @@ export class User {
   @Prop({ auto: true })
   _id!: mongoose.Schema.Types.ObjectId;
 
-  @Prop({ required: true, unique: true })
+  @Prop({ type: String, required: true, unique: true })
   username: string;
 
   @Prop({ unique: true })
