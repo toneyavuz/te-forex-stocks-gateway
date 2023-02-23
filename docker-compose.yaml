@@ -9,12 +9,12 @@ services:
       - "3000:3000"
     depends_on:
       - database
-  redis:
-    image: 'bitnami/redis:latest'
-    environment:
-      - REDIS_PASSWORD=password123
-    networks:
-      - app-network
+  # redis:
+  #   image: 'bitnami/redis:latest'
+  #   environment:
+  #     - REDIS_PASSWORD=password123
+  #   networks:
+  #     - app-network
 
 networks:
   app-network:
