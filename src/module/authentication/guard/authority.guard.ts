@@ -11,12 +11,12 @@ export class AuthorityGuard implements CanActivate {
     context: ExecutionContext,
     ): boolean | Promise<boolean> | Observable<boolean> {
     const authorities = this.reflector.get<string[]>('authorities', context.getHandler())
-    if(!authorities) {
-      return true;
-    }
     const user = context.switchToHttp().getRequest().user as User;
     const allUserAuthorities = user?.roles?.reduce((as, item) => as.concat(item.authorities), [] as Authority[]);
     if (!authorities || authorities.length === 0) return true
+    if(user?.roles?.length === 0) {
+      return false;
+    }
     if (!allUserAuthorities.map(authority => authorities.some(a => a === authority.code))) {
         throw new HttpException(`Missing at least one scope of `, HttpStatus.FORBIDDEN)
     }

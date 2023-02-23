@@ -24,7 +24,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swui', app, document);
 
-  const service: ConfigService = app.select(ConfigModule).get(ConfigService);
+  const service: ConfigService = app.get(ConfigService);
   const port = service.get('PORT') || 3000;
   await app.listen(port);
 }
