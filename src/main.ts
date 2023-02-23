@@ -1,3 +1,4 @@
+import { ConfigService, ConfigModule } from '@nestjs/config';
 import * as cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
@@ -23,7 +24,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swui', app, document);
 
-  const port = process.env.PORT || 3000;
+  const service: ConfigService = app.select(ConfigModule).get(ConfigService);
+  const port = service.get('PORT') || 3000;
   await app.listen(port);
 }
 bootstrap();
