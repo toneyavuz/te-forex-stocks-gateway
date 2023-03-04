@@ -10,6 +10,7 @@ import {
 import { AuthenticationService } from '../service/authentication.service';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from '../decorator/public.decorator';
+import { ValidateAuthenticationDto } from '../dto/validate-authentication.dto';
 
 
 interface IPolicyHandler {
@@ -29,7 +30,8 @@ export class AuthenticationController {
   @Public()
   @UseGuards(LocalAuthenticationGuard)
   @Post('login')
-  login(@Request() req) {
+  login(@Body() v: ValidateAuthenticationDto, @Request() req) {
+    console.log(v);
     return this.authenticationService.login(req.user);
   }
 
