@@ -53,10 +53,11 @@ export class CalculatorService {
     updateCalculatorDto: UpdateCalculatorDto,
   ): Promise<CalculatorResponseModel> {
     delete updateCalculatorDto.id;
-    const calculator = await this.calculatorModel.findByIdAndUpdate(
-      id,
+    await this.calculatorModel.updateOne(
+      {_id: id},
       updateCalculatorDto,
-    );
+    ).exec();
+    const calculator = await this.calculatorModel.findOne({ _id: id });
     const tpList: CalculatorResponseModel =
       this.getCalculatorResponse(calculator);
     tpList.calculator = calculator;
