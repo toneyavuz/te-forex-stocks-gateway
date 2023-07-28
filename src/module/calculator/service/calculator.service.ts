@@ -36,13 +36,14 @@ export class CalculatorService {
 
   async findAll(options: any = {}): Promise<Calculator[]> {
     const limit = options.limit || 10;
+    const author = options.author || '';
     const skip = options.skip || 0;
     const keyword = options.keyword || '';
     return await this.calculatorModel
       .find({
-        where: { name: { $regex: '.*' + keyword + '.*' } },
+        where: { name: { $regex: '.*' + keyword + '.*' }},
         order: { name: 'DESC' },
-      })
+      }).where('author').equals(author)
       .skip(skip)
       .limit(limit)
       .exec();

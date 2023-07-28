@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { CalculatorService } from '../service/calculator.service';
 import { CreateCalculatorDto, UpdateCalculatorDto } from '../dto/create-calculator.dto';
 import { CalculatorResponseModel } from '../schema/calculator.schema';
-import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtAuthenticationGuard } from '../../authentication/guard/jwt-authentication.guard';
 import * as mongoose from 'mongoose';
 
@@ -20,8 +20,9 @@ export class CalculatorController {
   }
 
   @Get()
-  findAll() {
-    return this.calculatorService.findAll();
+  @ApiQuery({ name: 'author', description: 'author of the calculator'})
+  findAll(@Query('author') author) {
+    return this.calculatorService.findAll({author});
   }
 
   @Get(':id')

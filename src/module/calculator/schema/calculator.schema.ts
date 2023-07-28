@@ -15,6 +15,9 @@ export class Calculator extends mongoose.Document {
 
   @Prop()
   name: string;
+  
+  @Prop({required: false})
+  author: string;
 
   @Prop()
   fee: number;
